@@ -1,0 +1,4 @@
+name = Phone Resource 
+description = Example module for use as a resource of AIS Server
+package = AIS
+core = 7.x

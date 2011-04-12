@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Ais Server feature.
+ */
+
+include_once('ais_server.features.inc');

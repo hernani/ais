@@ -1,0 +1,4 @@
+name = Ais Generic Client
+description = Example module for Ais Facade Client Manager
+package = AIS
+core = 7.x

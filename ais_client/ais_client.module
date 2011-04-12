@@ -1,0 +1,105 @@
+<?php 
+
+function ais_client_menu() {
+  
+  $items['admin/config/services/ais_client'] = array(
+    'title' => t('List all configs'),
+    'page callback' => 'ais_facade_client_list',
+    'access callback' => TRUE
+  );
+
+  $items['admin/config/services/ais_client/edit/%'] = array(
+    'title' => t('Edit module config'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('ais_facade_client_edit_form', 5),  
+    'access callback' => TRUE
+  );
+  
+  $items['admin/config/services/ais_client/add'] = array(
+    'title' => t('Add module config'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('ais_facade_client_edit_form'),  
+    'access callback' => TRUE
+  );
+  
+  return $items;
+}
+
+function ais_client_list() {
+  
+  $result = db_query("select * from {ais_client}");
+  while($obj = $result->fetchObject()) {
+    $rows[] = array( $obj->module, $obj->endpoint, l(t('Edit'), 'admin/config/services/ais_facade_client/edit/' . $obj->module));
+  }  
+  
+  return theme('table', array('header' => array(t('Module'), t('Endpoint'), ''), array('rows' => $rows)));
+}
+
+
+function ais_client_edit_form($form, &$form_state, $module = NULL) {
+  
+  $object=db_query("select * from {ais_client} where module=:module", array(':module' => $module))->fetchObject();
+  
+  
+  $form['mode'] = array(
+    '#type' => 'value',
+    '#value' => (isset($module) ? 'edit' : 'add')
+  );
+  
+  $form['fs'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Edit module using AIS facace')
+  );
+  
+  $form['fs']['module'] = array(
+    '#title' => t('Module'),
+    '#type' => 'textfield',
+    '#default_value' => $object ? $object->module : ''
+  );
+  
+  $form['fs']['endpoint'] = array(
+    '#title' => t('EndPoint Url'),
+    '#type' => 'textfield',
+    '#default_value' => $object ? $object->endpoint : ''
+  );
+  
+  $form['fs']['key'] = array(
+    '#title' => t('Key'),
+    '#type' => 'textfield',
+    '#default_value' => $object ? $object->module_key : ''
+  );
+  
+  $form['fs']['save'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save')
+  );
+  
+  return $form; 
+}
+
+function ais_client_edit_form_submit ($form, &$form_state) {
+
+  if($form_state['values']['op'] == t('Save')) {
+    
+    $obj = new stdClass();
+    $obj->module = $form_state['values']['module'];
+    $obj->module_key = $form_state['values']['key'];
+    $obj->endpoint = $form_state['values']['endpoint'];
+    
+    if($form_state['values']['mode']=='edit')
+      drupal_write_record('ais_client', $obj, array('module'));
+    else
+      drupal_write_record('ais_client', $obj);
+    
+  }
+  
+}
+
+/*
+ * API funciton to get endpoint for a module
+ */
+function ais_client_get_endpoint($module) {
+  $object=db_query("select * from {ais_client} where module=:module", array(':module' => $module))->fetchObject();
+  return $object->endpoint;
+}
+

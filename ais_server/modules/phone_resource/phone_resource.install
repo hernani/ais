@@ -1,0 +1,34 @@
+ <?php 
+
+function phone_resource_schema() {
+  
+  $items['phonebook'] = array(
+    'description' => 'TODO: please describe this table!',
+    'fields' => array(
+      'user_id' => array(
+        'description' => 'TODO: please describe this field!',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'phonenumber' => array(
+        'description' => 'TODO: please describe this field!',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'name' => array(
+        'description' => 'TODO: please describe this field!',
+        'type' => 'varchar',
+        'lenght' => 150,
+        'not null' => TRUE,
+      ),
+      'parent_user_id' => array(
+        'description' => 'TODO: please describe this field!',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('user_id'),
+  );
+  
+  return $items;
+}

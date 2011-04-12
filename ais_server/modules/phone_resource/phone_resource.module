@@ -1,0 +1,43 @@
+<?php 
+
+function phone_resource_services_resources() {
+      return array(
+       'phone' => array(
+         'retrieve' => array(
+           'help' => 'Retrieves a note',
+           'file' => array('file' => 'inc', 'module' => 'phone_resource'),
+           'callback' => '_phoneresource_retrieve',
+           'access callback' => 'user_access',
+           'access arguments' => array('access content'),
+           'access arguments append' => FALSE,
+           'args' => array(
+             array(
+               'name' => 'uid',
+               'type' => 'int',
+               'description' => 'The id of the userid to get',
+               'source' => array('path' => '0'),
+               'optional' => FALSE,
+             ),
+           ),
+         ),
+         'actions' => array(
+           'hierarchy' => array(
+             'help' => 'Retrieves a note',
+             'file' => array('file' => 'inc', 'module' => 'phone_resource'),
+             'callback' => '_phoneresource_hierarchy',
+             'access callback' => 'user_access',
+             'access arguments' => array('access content'),
+             'args' => array(
+               array(
+                 'name' => 'uid',
+                 'type' => 'int',
+                 'description' => 'The id of the userid to get',
+                 'source' => 'data',
+                 'optional' => FALSE,
+               ),
+             ),
+           ),
+          )),
+      );
+    }
+     

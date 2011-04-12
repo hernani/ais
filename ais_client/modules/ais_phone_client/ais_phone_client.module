@@ -1,0 +1,123 @@
+<?php 
+
+function ais_phone_client_menu() {
+
+  $items['phone-number/get/%'] = array(
+    'title' => t('Get Phone Number'),
+  	'page callback' => 'ais_phone_page_render',
+    'page arguments' => array(2),
+    'access callback' => TRUE
+  );
+  return $items;
+}
+
+/* implementation of hook_block_info */
+function ais_phone_client_block_info() {  
+  return array(
+    'simple_phone_number' => array(
+      'info' => t('Renders a simple phone number return by a query to the facade layer')
+    ),
+    'simple_hierarchy' => array(
+      'info' => t('Renders a simple hierarchy')
+    )
+  );
+}
+
+/*
+ * implementation of hook_theme
+ */
+function ais_phone_client_theme() {
+  
+  $items['simple_hierarchy'] = array(
+      'template' => 'simple_hierarchy',
+      'variables' => array('object' => NULL)
+  );  
+  
+  return $items;
+}
+
+
+
+/* implementation of hook_block_view */
+function ais_phone_client_block_view($delta = NULL) {  
+    
+  switch($delta) {
+    case 'simple_phone_number':
+    
+    $uid = arg(1);  
+    $response = _ais_phone_get_phone_number($uid);  
+    
+    if(!strcmp ($response->code, '200')) {
+      $object = json_decode($response->data);  
+      $content = check_plain($object->phonenumber);
+    }
+    else {
+      $content = t('Phone Number Undefined');
+    }
+      
+    return array(
+        'subject' => t('Employee Phone Number'),
+        'content' => $content
+    );
+    break;
+    
+     case 'simple_hierarchy':
+    
+    $uid = arg(1);  
+    $response = _ais_phone_get_phone_hierarchy($uid);  
+    if(!strcmp ($response->code, '200')) {
+      $object = json_decode($response->data);
+      $content = theme('simple_hierarchy' , array('object' => $object));
+    }
+    else {
+      $content = t('Phone Number Undefined');
+    }
+      
+    return array(
+        'subject' => t('Hierarchy'),
+        'content' => $content
+    );
+    break;
+  }
+}
+
+
+
+/* callback to render page */
+function ais_phone_page_render ($user_id ) {
+  $response=_ais_phone_get_phone_number($user_id);
+  
+  if(!strcmp ($response->code, '200')) {
+    $object = json_decode($response->data);  
+    return $object->phonenumber;
+  }
+  else {
+    return t('Phone Number not found');
+  }
+}
+
+
+function _ais_phone_get_phone_number($user_id) {  
+  $endpoint = ais_client_get_endpoint('phone') . 'phone/' . check_plain($user_id);  
+  $options['method'] = 'GET';  
+  $response = drupal_http_request($endpoint, $options);
+  
+  return $response;
+}
+
+function _ais_phone_get_phone_hierarchy($user_id) {  
+  $endpoint = ais_client_get_endpoint('phone') . 'phone/hierarchy' ;  
+  
+  $data = array(
+    'uid' => $user_id,
+  );
+  
+  $data = http_build_query($data, '', '&');
+  
+  $options['method'] = 'POST';  
+  $options['data'] = $data;  
+
+  $response = drupal_http_request($endpoint, $options);
+  
+  return $response;
+}

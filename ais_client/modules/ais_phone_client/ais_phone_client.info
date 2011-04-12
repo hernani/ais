@@ -1,0 +1,5 @@
+name = Ais Phone Client
+description = Example module for AIS Phone Client
+package = AIS
+core = 7.x
+dependencies[] = ais_client

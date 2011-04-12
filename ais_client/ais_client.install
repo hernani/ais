@@ -1,0 +1,33 @@
+ <?php 
+
+function ais_client_schema() {
+  
+  $items['ais_client'] = array(
+    'description' => 'TODO: please describe this table!',
+    'fields' => array(
+      'module' => array(
+        'description' => 'TODO: please describe this field!',
+        'type' => 'varchar',
+        'length' => 100,
+        'not null' => TRUE,
+      ),
+      'endpoint' => array(
+        'description' => 'TODO: please describe this field!',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+      
+      'module_key' => array(
+        'description' => 'TODO: please describe this field!',
+        'type' => 'varchar',
+        'length' => 100,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+    ),
+    'primary key' => array('module'),
+  );
+  
+  return $items;
+}
